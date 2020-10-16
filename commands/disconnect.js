@@ -1,4 +1,3 @@
-const Discord = require("discord.js");
 const fs = require('fs');
 
 const index = require("../index.js");
@@ -14,9 +13,8 @@ module.exports.run = async (bot,message,args)=>{
     if(currentServer.voiceChannel.id !== message.member.voice.channel.id) return message.channel.send(new embeds.ErrorEmbed(`Nem vagyunk ugyanabban a szobában! Jelenleg a(z) ${currentServer.voiceChannel.name} szobában vagyok!`))
 
     if(currentServer.id === '624289705298755615') deleteFile();
-    await message.channel.send(new Discord.MessageEmbed()
-        .setColor("#de374e")
-        .setTitle("Lecsatlakozva!"));
+
+    await message.channel.send(new embeds.ErrorEmbed('Lecsatlakozva!'));
     return currentServer.disconnect();
 }
 

@@ -1,5 +1,3 @@
-const Discord = require("discord.js");
-
 const embeds = require('../classes/embeds');
 
 async function sendHelpMessage(channel){

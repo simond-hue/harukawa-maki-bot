@@ -2,7 +2,6 @@ const embeds = require("../classes/embeds");
 const fs = require("fs");
 
 var musicbotconfig = require("../musicbotconfig.json");
-const { rejects } = require("assert");
 
 module.exports.run = async (bot, message, args) => {
     if(!message.member.hasPermission("MANAGE_ROLES")) return message.channel.send(new embeds.ErrorEmbed("Nincs meg a megfelelő jogköröd!"));

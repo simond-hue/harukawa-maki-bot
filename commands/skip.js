@@ -1,5 +1,3 @@
-const Discord = require("discord.js");
-
 const index = require("../index.js");
 const embeds = require("../classes/embeds");
 const musicbotconfig = require("../musicbotconfig.json");

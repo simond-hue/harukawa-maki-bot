@@ -60,6 +60,7 @@ module.exports.Server = class Server{
     }
 
     async disconnect(){
+        if(this.transcoder) this.transcoder.destroy();
         this.voiceConnection.disconnect();        
         this._destroy();
     }
