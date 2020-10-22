@@ -83,6 +83,7 @@ module.exports.Server = class Server{
         }
         if(!this.queue[this.SHI].information){
             await this.channel.send(new embeds.ErrorEmbed('Hiba történt a lekérdezés során. Átugrás...'));
+            this.skip();
         }
         var stream = null;
         await new Promise(async(resolve,reject)=>{
@@ -190,7 +191,7 @@ module.exports.Server = class Server{
         var url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet';
         var results = 50;
 
-        request(`${url}&maxResults=${results}&playlistId=${listID}&key=${botconfig.YOUTUBE_API_KEY}&${pageToken}`,(error,response,data)=>{
+        request(`${url}&maxResults=${results}&playlistId=${listID}&key=${botconfig.YOUTUBE_API_KEY}&${pageToken}`,async (error,response,data)=>{
             try{
                 if(!response) throw new exceptions.UnexpectedAPIResponse("Unexpected API response!");
                 if(response.statusCode === 400) throw new exceptions.BadRequest("Bad Request!");
@@ -210,7 +211,7 @@ module.exports.Server = class Server{
                     }
                     else{
                         this.APIrequestDONE = true;
-                        message.channel.send(new embeds.ErrorEmbed(`${this.queue.length} szám lett hozzáadva a lejátszási listához!`))
+                        await message.channel.send(new embeds.ErrorEmbed(`${data.pageInfo.totalResults} szám lett hozzáadva a lejátszási listához!`))
                     }
                 }
             }

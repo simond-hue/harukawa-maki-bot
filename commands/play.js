@@ -2,6 +2,7 @@ var index = require("../index.js");
 var embeds = require("../classes/embeds");
 
 module.exports.run = async (bot, message, args) =>{
+    if(!message.member.voice.channel) return message.channel.send(new embeds.ErrorEmbed("Voice channelben kell lenned, hogy meg tudj idézni!"));
     if(!index.servers[message.guild.id]) await bot.commands.get("summon").run(bot,message,args);
 
     var vidID = null;

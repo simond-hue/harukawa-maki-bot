@@ -15,9 +15,8 @@ module.exports.Song = class Song{
 
     async getInfo(){
         await new Promise(async(resolve,reject)=>{
-            //var idk = await ytdl.getInfo(this.link,{downloadURL: true});
-            ytdl.getInfo(this.link,{downloadURL: true},async(err,info)=>{
-                if(err){
+            try{
+                var info = await ytdl.getInfo(this.link,{downloadURL: true}).catch(err =>{
                     if(err.message === "Video unavailable"){
                         throw new exceptions.SongIsNotAvailable('A videó nem elérhető!');
                     }
@@ -29,6 +28,41 @@ module.exports.Song = class Song{
                         console.log(err);
                         return;
                     }
+                });
+                resolve(info);
+                if(!info){ return; }
+                this.information = info;
+                this.title = info.videoDetails.title;
+                this.thumbnail = info.player_response.videoDetails.thumbnail.thumbnails[0].url;
+                this.isLive = info.player_response.videoDetails.isLive;
+                this.formats = info.formats;
+                this.length = info.videoDetails.lengthSeconds;
+            }
+            catch(err){
+                if(err instanceof exceptions.SongIsNotAvailable){
+                    await this.server.channel.send(new embeds.ErrorEmbed(err.message));
+                    if(!this.server.voiceConnection.dispatcher && this.server.queue[this.server.SHI]) this.server.skip();
+                }
+                else if(err.message === 'Too many redirects.' || err.message === 'The user aborted a request.'){
+                    await this.serrver.channel.send(new embeds.ErrorEmbed("Hiba történt! Átugrás..."));
+                    if(this.isLive)
+                        await this.server.songFinish();
+                    else
+                        await this.server.skip();
+                }
+                else{
+                    console.log(err);
+                    await this.serrver.channel.send(new embeds.ErrorEmbed("Hiba történt! Átugrás..."));
+                    this.server.skip();
+                }
+            }
+        })
+
+        /*await new Promise(async(resolve,reject)=>{
+            //var idk = await ytdl.getInfo(this.link,{downloadURL: true});
+            ytdl.getInfo(this.link,{downloadURL: true},async(err,info)=>{
+                if(err){
+
                 }
                 resolve(info);
                 if(!info){ return; }
@@ -56,7 +90,7 @@ module.exports.Song = class Song{
                     this.server.skip();
                 }
             })
-        })
+        })*/
     }
 
     clear(){
