@@ -8,6 +8,7 @@ lerna-debug.log*
 
 #data
 *.json
+nowplaying.txt
 
 #starter items
 *.bat
