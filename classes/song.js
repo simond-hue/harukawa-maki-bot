@@ -13,10 +13,10 @@ module.exports.Song = class Song{
         this.server = index.servers[message.guild.id];
     }
 
-    async getInfo(){
+    async getInfo(retries = 2){
         await new Promise(async(resolve,reject)=>{
             try{
-                var info = await ytdl.getInfo(this.link,{downloadURL: true}).catch(err =>{
+                var info = await ytdl.getInfo(this.link).catch(err =>{
                     if(err.message === "Video unavailable"){
                         throw new exceptions.SongIsNotAvailable('A videó nem elérhető!');
                     }
@@ -49,6 +49,9 @@ module.exports.Song = class Song{
                         await this.server.songFinish();
                     else
                         await this.server.skip();
+                }
+                else if(err.message.includes('Unable to retrieve video metadata') && retries > 0){
+                    await this.getInfo(retries-1);
                 }
                 else{
                     console.log(err);
