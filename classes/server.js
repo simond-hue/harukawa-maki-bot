@@ -61,7 +61,7 @@ module.exports.Server = class Server{
             if(this.getNonBotsOnTheVoiceChannel() == 0){
                 this._noUserInVoiceChannelTimeout = setTimeout(() => {
                     this.disconnect();
-                }, 10000);
+                }, 300000);
             }
             else if(this.getNonBotsOnTheVoiceChannel() > 0 && this._noUserInVoiceChannelTimeout){
                 clearTimeout(this._noUserInVoiceChannelTimeout);
