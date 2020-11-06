@@ -47,6 +47,8 @@ module.exports.Server = class Server{
 
         this._endSongTimeout = null;
 
+        this._noUserInVoiceChannelTimeout = null;
+
         bot.on("voiceStateUpdate",(oldState, newState)=>{
             if(oldState.member === message.guild.me){
                 if(oldState.channelID){
@@ -55,6 +57,14 @@ module.exports.Server = class Server{
                 if(newState.channelID === null){
                     this._destroy();
                 }
+            }
+            if(this.getNonBotsOnTheVoiceChannel() == 0){
+                this._noUserInVoiceChannelTimeout = setTimeout(() => {
+                    this.disconnect();
+                }, 10000);
+            }
+            else if(this.getNonBotsOnTheVoiceChannel() > 0 && this._noUserInVoiceChannelTimeout){
+                clearTimeout(this._noUserInVoiceChannelTimeout);
             }
         })
     }
@@ -68,6 +78,7 @@ module.exports.Server = class Server{
     _destroy(){
         if(this._connectionTimeout !== null) clearTimeout(this._connectionTimeout);
         if(this._endSongTimeout !== null) clearTimeout(this._endSongTimeout);
+        if(this._noUserInVoiceChannelTimeout !== null) clearTimeout(this._noUserInVoiceChannelTimeout);
         
         delete index.servers[this.id];
     }
@@ -331,6 +342,7 @@ module.exports.Server = class Server{
         var currentSong = this.queue[this.SHI];
         this.queue.length = 0;
         this.queue.push(currentSong);
+        this.SHI = 0;
         if(this.shuffled) this.shuffled = !this.shuffled;
         if(this.looped) this.looped = !this.looped;
     }

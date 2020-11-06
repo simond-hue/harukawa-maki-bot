@@ -117,7 +117,7 @@ module.exports.QueueEmbed = class QueueEmbed extends Discord.MessageEmbed{
 
     nowPlayingDisplay(nth,song){
         this.addField("\u200b","**__Jelenlegi szám__**");
-        this.addField("\u200b","\`" +nth+"\`" + ". " + `[${song.title}](${song.link})` + " " + "\`| " + this.normalize(song.length) + ` Kérte: ${song.requestedBy}\n\``);
+        this.addField("\u200b",`[${song.title}](${song.link})` + " " + "\`| " + this.normalize(song.length) + ` Kérte: ${song.requestedBy}\n\``);
     }
 
     normalize(seconds){
