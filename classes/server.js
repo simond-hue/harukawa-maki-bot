@@ -37,6 +37,7 @@ module.exports.Server = class Server{
         this.paginator = null;
         this.speed = 1;
         this.transcoder = null;
+        this._playedSong = false;
 
         this._connectionTimeout = setTimeout(() => {
             if(this.queue.length === 0){
@@ -58,14 +59,24 @@ module.exports.Server = class Server{
                     this._destroy();
                 }
             }
-            if(this.getNonBotsOnTheVoiceChannel() == 0){
-                this._noUserInVoiceChannelTimeout = setTimeout(() => {
-                    this.disconnect();
-                }, 300000);
+            if(!newState.channelID && !newState.member.user.bot){
+                if(this.voiceChannel){
+                    if(oldState.channelID === this.voiceChannel.id){
+                        if(this.getNonBotsOnTheVoiceChannel() === 0 && this._playedSong){
+                            this._noUserInVoiceChannelTimeout = setTimeout(() => {
+                                this.channel.send(new embeds.ErrorEmbed('Időtúllépés...'));
+                                this.disconnect();
+                            }, 300000);
+                        }
+                    }
+                }
             }
-            else if(this.getNonBotsOnTheVoiceChannel() > 0 && this._noUserInVoiceChannelTimeout){
-                clearTimeout(this._noUserInVoiceChannelTimeout);
+            else if(newState.channelID && !newState.member.user.bot){
+                if(this._noUserInVoiceChannelTimeout){
+                    clearTimeout(this._noUserInVoiceChannelTimeout);
+                }
             }
+
         })
     }
 
@@ -277,6 +288,7 @@ module.exports.Server = class Server{
     }
 
     async _songStart(){
+        this._playedSong = true;
         if(this.voiceConnection.channel.id !== this.voiceChannel.id) this.voiceConnection.channel = this.voiceChannel;
         if(!this.looped || this.queue[this.SHI].isLive) await this.channel.send(new embeds.SongEmbed(this.queue[this.SHI]));
         console.log("\x1b[36m%s\x1b[0m",this.id + ": ", this.queue[this.SHI].link);
