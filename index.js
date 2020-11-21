@@ -34,22 +34,22 @@ bot.on("message", async message => {
     let prefix = botconfig.prefix;
     switch (message.content.toLowerCase()) {
         case 'nigger':
-            message.channel.send('nigger');
+            await message.channel.send('nigger');
             break;
         case 'o7':
-            message.channel.send('o7');
+            await message.channel.send('o7');
             break;
         case '\\o':
-            message.channel.send('o/');
+            await message.channel.send('o/');
             break;
         case 'o/':
-            message.channel.send('\\o');
+            await message.channel.send('\\o');
             break;
         case 'durgum':
-            message.channel.send('Elegem van belotetek bazdmeg, menjel mar innen te hervadas toroltem a fiokom miattatok egyebkent utol ertelek volna siman te nyomoronc na menje verjed magad az osun 30evesen toljad a Haitai palyat mert csak neked az jut, engem ne edesezz mert megkereslek azt megbaszlak  szoval okosan dumalj nekem na menje verjed magad a tarsaiddal egyutt hajra a top1-hez ! ;)');
+            await message.channel.send('Elegem van belotetek bazdmeg, menjel mar innen te hervadas toroltem a fiokom miattatok egyebkent utol ertelek volna siman te nyomoronc na menje verjed magad az osun 30evesen toljad a Haitai palyat mert csak neked az jut, engem ne edesezz mert megkereslek azt megbaszlak  szoval okosan dumalj nekem na menje verjed magad a tarsaiddal egyutt hajra a top1-hez ! ;)');
             break;
         case 'hete':
-            message.channel.send('Másszál föl! Uram.. uram... Kérdezhetek valamit magától valamit? Először mássz föl, de amúgy igen. Akkor most kérdezhetek? Akkor mondjad... HE TE BRÉTÚRÓ A KURVA ANYÁDAT! Arcade... Arcade a srác neve. A KURVA ANYÁDAT BRÉTÚRÓ! aha... GRAFIKUST KIFIZETTED MÁR, TE BUZI? igen..? HOGY BASSZAK RÁ ARRA A KUGLI KOPASZ GECI FEJEDRE! Fhuu... de értelmes gyermek vagy. MOSÓGÉPET KIFIZETTED TE FASSZOPÓ? Így van és a lakást se, nyugalom. Anyád biztos büszke rád! ENGEM.. TÉGED CSALT MEG VELEM. Igen?! De jó... örülök neki! ÚGY SZOPOTT HALLOD... Aha... NAGYON DURVA! Mhm... oké. TE KOPASZ KÖCSÖG! Igen? Köcsög vagyok? A KURVA ANYÁDAT! Ezért az anyámat?! BÜDÖS VAGY... Te figyelj, nem akarok köcsög lenni, azt mondod, hogy szarabb voltál mint én? Vagy miért vagy rám ideges? NEM HALLAK VEDD KI A FASZT A SZÁDBÓL, TE KOPASZ GECI! Jó... Oké, oké... HOGY VILÁGÍT A FEJED A LIVEBA!')
+            await message.channel.send('Másszál föl! Uram.. uram... Kérdezhetek valamit magától valamit? Először mássz föl, de amúgy igen. Akkor most kérdezhetek? Akkor mondjad... HE TE BRÉTÚRÓ A KURVA ANYÁDAT! Arcade... Arcade a srác neve. A KURVA ANYÁDAT BRÉTÚRÓ! aha... GRAFIKUST KIFIZETTED MÁR, TE BUZI? igen..? HOGY BASSZAK RÁ ARRA A KUGLI KOPASZ GECI FEJEDRE! Fhuu... de értelmes gyermek vagy. MOSÓGÉPET KIFIZETTED TE FASSZOPÓ? Így van és a lakást se, nyugalom. Anyád biztos büszke rád! ENGEM.. TÉGED CSALT MEG VELEM. Igen?! De jó... örülök neki! ÚGY SZOPOTT HALLOD... Aha... NAGYON DURVA! Mhm... oké. TE KOPASZ KÖCSÖG! Igen? Köcsög vagyok? A KURVA ANYÁDAT! Ezért az anyámat?! BÜDÖS VAGY... Te figyelj, nem akarok köcsög lenni, azt mondod, hogy szarabb voltál mint én? Vagy miért vagy rám ideges? NEM HALLAK VEDD KI A FASZT A SZÁDBÓL, TE KOPASZ GECI! Jó... Oké, oké... HOGY VILÁGÍT A FEJED A LIVEBA!')
     }
 
     let commandfile = bot.commands.get(cmd.slice(prefix.length));
@@ -57,7 +57,6 @@ bot.on("message", async message => {
         log(message);
         try{
             if(!messageServers[message.guild.id]) messageServers[message.guild.id] = { canCallCommand: true }
-            console.log(messageServers);
             if(messageServers[message.guild.id].canCallCommand){
                 if (commandfile && commandfile.type !== 'auto'){
                     messageServers[message.guild.id].canCallCommand = false;

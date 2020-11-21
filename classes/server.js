@@ -38,6 +38,7 @@ module.exports.Server = class Server{
         this.speed = 1;
         this.transcoder = null;
         this._playedSong = false;
+        this._ranNoUserInVoiceChannel = false;
 
         this._connectionTimeout = setTimeout(() => {
             if(this.queue.length === 0){
@@ -59,19 +60,20 @@ module.exports.Server = class Server{
                     this._destroy();
                 }
             }
-            if(!newState.channelID && !newState.member.user.bot){
+            if(!newState.member.user.bot){
                 if(this.voiceChannel){
-                    if(oldState.channelID === this.voiceChannel.id){
+                    if(oldState.channelID === this.voiceChannel.id && !this._ranNoUserInVoiceChannel){
+                        this._ranNoUserInVoiceChannel = true;
                         if(this.getNonBotsOnTheVoiceChannel() === 0 && this._playedSong){
                             this._noUserInVoiceChannelTimeout = setTimeout(() => {
                                 this.channel.send(new embeds.ErrorEmbed('Időtúllépés...'));
                                 this.disconnect();
-                            }, 300000);
+                            }, 3000);
                         }
                     }
                 }
             }
-            else if(newState.channelID && !newState.member.user.bot){
+            else if(newState.channelID && !newState.member.user.bot && newState.channelID === this.voiceChannel.id){
                 if(this._noUserInVoiceChannelTimeout){
                     clearTimeout(this._noUserInVoiceChannelTimeout);
                 }
@@ -82,7 +84,7 @@ module.exports.Server = class Server{
 
     async disconnect(){
         if(this.transcoder) this.transcoder.destroy();
-        this.voiceConnection.disconnect();        
+        this.voiceConnection.disconnect();
         this._destroy();
     }
 
@@ -90,7 +92,7 @@ module.exports.Server = class Server{
         if(this._connectionTimeout !== null) clearTimeout(this._connectionTimeout);
         if(this._endSongTimeout !== null) clearTimeout(this._endSongTimeout);
         if(this._noUserInVoiceChannelTimeout !== null) clearTimeout(this._noUserInVoiceChannelTimeout);
-        
+
         delete index.servers[this.id];
     }
 
@@ -418,5 +420,9 @@ module.exports.Server = class Server{
 
     setSpeed(s){
         this.speed = s;
+    }
+
+    delete(index){
+        this.queue.splice(index,1);
     }
 }
