@@ -68,7 +68,7 @@ module.exports.Server = class Server{
                             this._noUserInVoiceChannelTimeout = setTimeout(() => {
                                 this.channel.send(new embeds.ErrorEmbed('Időtúllépés...'));
                                 this.disconnect();
-                            }, 3000);
+                            }, 300000);
                         }
                     }
                 }
