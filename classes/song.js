@@ -11,6 +11,8 @@ module.exports.Song = class Song{
         this.requestedBy = requestedBy;
         this.requestedByPFP = requestedByPFP;
         this.server = index.servers[message.guild.id];
+
+        this._setVideoId();
     }
 
     async getInfo(retries = 2){
@@ -60,40 +62,10 @@ module.exports.Song = class Song{
                 }
             }
         })
+    }
 
-        /*await new Promise(async(resolve,reject)=>{
-            //var idk = await ytdl.getInfo(this.link,{downloadURL: true});
-            ytdl.getInfo(this.link,{downloadURL: true},async(err,info)=>{
-                if(err){
-
-                }
-                resolve(info);
-                if(!info){ return; }
-                this.information = info;
-                this.title = info.videoDetails.title;
-                this.thumbnail = info.player_response.videoDetails.thumbnail.thumbnails[0].url;
-                this.isLive = info.player_response.videoDetails.isLive;
-                this.formats = info.formats;
-                this.length = info.videoDetails.lengthSeconds;
-            }).catch(async(err) =>{
-                if(err instanceof exceptions.SongIsNotAvailable){
-                    await this.server.channel.send(new embeds.ErrorEmbed(err.message));
-                    if(!this.server.voiceConnection.dispatcher && this.server.queue[this.server.SHI]) this.server.skip();
-                }
-                else if(err.message === 'Too many redirects.' || err.message === 'The user aborted a request.'){
-                    await this.serrver.channel.send(new embeds.ErrorEmbed("Hiba történt! Átugrás..."));
-                    if(this.isLive)
-                        await this.server.songFinish();
-                    else
-                        await this.server.skip();
-                }
-                else{
-                    console.log(err);
-                    await this.serrver.channel.send(new embeds.ErrorEmbed("Hiba történt! Átugrás..."));
-                    this.server.skip();
-                }
-            })
-        })*/
+    _setVideoId(){
+        this.videoId = this.link.split('?')[1].substr(2,13);
     }
 
     clear(){
@@ -104,4 +76,9 @@ module.exports.Song = class Song{
         this.formats = null;
         this.length = null;
     }
+
+    equals(o) {
+        return this.videoId === o.videoId;
+    }
 }
+

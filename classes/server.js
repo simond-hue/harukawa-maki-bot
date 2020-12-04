@@ -14,6 +14,7 @@ const GAIN = 20;
 const TREBLEGAIN = 4;
 
 var index = require("../index");
+const { listenerCount } = require("process");
 
 module.exports.Server = class Server{
     constructor(message,bot){
@@ -73,7 +74,7 @@ module.exports.Server = class Server{
                     }
                 }
             }
-            else if(newState.channelID && !newState.member.user.bot && newState.channelID === this.voiceChannel.id){
+            if(newState.channelID && !newState.member.user.bot && newState.channelID === this.voiceChannel.id){
                 if(this._noUserInVoiceChannelTimeout){
                     clearTimeout(this._noUserInVoiceChannelTimeout);
                 }
@@ -424,5 +425,24 @@ module.exports.Server = class Server{
 
     delete(index){
         this.queue.splice(index,1);
+    }
+
+    removeDupes(){
+        var removedDupes = [];
+        this.queue.forEach(song =>{
+            if(!this._containsElement(removedDupes, song)) removedDupes.push(song);
+        });
+        this.queue = removedDupes;
+    }
+
+    _containsElement(list, item){
+        var contains = false;
+        var i = 0;
+        while(i < list.length && !contains) {
+            var song = list[i];
+            if(song.videoId === item.videoId) contains = true;
+            i++;
+        }
+        return contains;
     }
 }
