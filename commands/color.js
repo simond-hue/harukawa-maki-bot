@@ -10,7 +10,7 @@ module.exports.run = async(bot,message,args) => {
 
     if(!color.match(/^#([0-9a-f]{6}|[0-9a-f]{3})$/i)) return message.channel.send(new embeds.ErrorEmbed('Nem hexa kódot adtál meg!'));
 
-    return message.channel.send(new embeds.ColorEmbed(color)).then(msg =>{
+    return await message.channel.send(new embeds.ColorEmbed(color)).then(msg =>{
         new colorcollector.ColorCollector(msg, color, message.member);
     })
 }

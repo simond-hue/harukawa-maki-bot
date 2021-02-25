@@ -34,6 +34,9 @@ bot.on("message", async message => {
     let args = messageArray.slice(1);
     let prefix = botconfig.prefix;
     switch (message.content.toLowerCase()) {
+        case 'fasz':
+            await message.channel.send('faszfasz.html');
+            break;
         case 'nigger':
             await message.channel.send('nigger');
             break;
@@ -52,6 +55,8 @@ bot.on("message", async message => {
         case 'hete':
             await message.channel.send('Másszál föl! Uram.. uram... Kérdezhetek valamit magától valamit? Először mássz föl, de amúgy igen. Akkor most kérdezhetek? Akkor mondjad... HE TE BRÉTÚRÓ A KURVA ANYÁDAT! Arcade... Arcade a srác neve. A KURVA ANYÁDAT BRÉTÚRÓ! aha... GRAFIKUST KIFIZETTED MÁR, TE BUZI? igen..? HOGY BASSZAK RÁ ARRA A KUGLI KOPASZ GECI FEJEDRE! Fhuu... de értelmes gyermek vagy. MOSÓGÉPET KIFIZETTED TE FASSZOPÓ? Így van és a lakást se, nyugalom. Anyád biztos büszke rád! ENGEM.. TÉGED CSALT MEG VELEM. Igen?! De jó... örülök neki! ÚGY SZOPOTT HALLOD... Aha... NAGYON DURVA! Mhm... oké. TE KOPASZ KÖCSÖG! Igen? Köcsög vagyok? A KURVA ANYÁDAT! Ezért az anyámat?! BÜDÖS VAGY... Te figyelj, nem akarok köcsög lenni, azt mondod, hogy szarabb voltál mint én? Vagy miért vagy rám ideges? NEM HALLAK VEDD KI A FASZT A SZÁDBÓL, TE KOPASZ GECI! Jó... Oké, oké... HOGY VILÁGÍT A FEJED A LIVEBA!')
     }
+    if(message.content.toLowerCase().includes("buzi vagyok") || message.content.toLowerCase().includes("buzivagyok"))
+        await message.channel.send(':microphone:sawarasenai:smiling_face_with_3_hearts:kimi:smile_cat:wa:chains:shoujo:ghost:na:nail_care:no?:sparkles:böKù:cherry_blossom:Wâ:fairy:ÿARiçHiñ:prince:BįCChī:pouting_cat:ńO:weary:oSû:person_rowing_boat:Dà:tada:YO:sweat_drops: :microphone:sawarasenai:smiling_face_with_3_hearts:kimi:smile_cat:wa:chains:shoujo:ghost:na:nail_care:no?:sparkles:böKù:cherry_blossom:Wâ:fairy:ÿARiçHiñ:prince:BįCChī:pouting_cat:ńO:weary:oSû:person_rowing_boat:Dà:tada:YO:sweat_drops: :microphone:sawarasenai:smiling_face_with_3_hearts:kimi:smile_cat:wa:chains:shoujo:ghost:na:nail_care:no?:sparkles:böKù:cherry_blossom:Wâ:fairy:ÿARiçHiñ:prince:BįCChī:pouting_cat:ńO:weary:oSû:person_rowing_boat:Dà:tada:YO:sweat_drops: :microphone:sawarasenai:smiling_face_with_3_hearts:kimi:smile_cat:wa:chains:shoujo:ghost:na:nail_care:no?:sparkles:böKù:cherry_blossom:Wâ:fairy:ÿARiçHiñ:prince:BįCChī:pouting_cat:ńO:weary:oSû:person_rowing_boat:Dà:tada:YO:sweat_drops: :microphone:sawarasenai:smiling_face_with_3_hearts:kimi:smile_cat:wa:chains:shoujo:ghost:na:nail_care:no?:sparkles:böKù:cherry_blossom:Wâ:fairy:ÿARiçHiñ:prince:BįCChī:pouting_cat:ńO:weary:oSû:person_rowing_boat:Dà:tada:YO:sweat_drops: :microphone:sawarasenai:smiling_face_with_3_hearts:kimi:smile_cat:wa:chains:shoujo:ghost:na:nail_care:no?:sparkles:böKù:cherry_blossom:Wâ:fairy:ÿARiçHiñ:prince:BįCChī:pouting_cat:ńO:weary:oSû:person_rowing_boat:Dà:tada:YO:sweat_drops:');
 
     let commandfile = bot.commands.get(cmd.slice(prefix.length));
     if (botconfig.prefix === cmd.slice(0, prefix.length)) {

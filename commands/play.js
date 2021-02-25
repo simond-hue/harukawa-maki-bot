@@ -29,6 +29,9 @@ module.exports.run = async (bot, message, args) =>{
         await currentServer.searchPlaylist(message, listID);
             
     }
+    else if(vidID === null && content === "megakarokhalni.mp3" && currentServer.id === '624289705298755615' && message.author.id === '336471304653897728'){
+        await currentServer.playMegAkarokHalni(message);
+    }
     else if(vidID === null && !content.startsWith('https://www.youtube.com/')){
         await currentServer.searchFirst(message);
     }

@@ -16,6 +16,7 @@ module.exports.Song = class Song{
     }
 
     async getInfo(retries = 2){
+        if(this.link === 'D:/Harukawa_bot/megakarokhalni2.mp3') return;
         await new Promise(async(resolve,reject)=>{
             try{
                 var info = await ytdl.getInfo(this.link).catch(err =>{
@@ -65,7 +66,13 @@ module.exports.Song = class Song{
     }
 
     _setVideoId(){
-        this.videoId = this.link.split('?')[1].substr(2,13);
+        if(this.link.startsWith('https://www.youtube.com/watch?')){
+            this.videoId = this.link.split('?')[1].substr(2,13);
+        }
+        else if(this.link.startsWith('https://youtu.be/')){
+            var rawLink = this.link.split('?')[0].split('/');
+            this.videoId = rawLink[rawLink.length-1];
+        }
     }
 
     clear(){

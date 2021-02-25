@@ -10,6 +10,7 @@ lerna-debug.log*
 test/
 *.json
 nowplaying.txt
+*.mp3
 
 #starter items
 *.bat

@@ -14,9 +14,13 @@ module.exports.ColorCollector = class ColorCollector extends Discord.ReactionCol
         this._requestedBy = requestedBy;
 
         this.on('collect',reaction =>{
-            this._collect();
-            if(reaction.emoji.name === '✅') 
-                this._message.channel.send(new embeds.ErrorEmbed('Sikeres változtatás!'))
+            if(reaction.emoji.name === '✅'){
+                this._collect();
+                this._message.channel.send(new embeds.ErrorEmbed('Sikeres változtatás!'));
+            }
+            else if(reaction.emoji.name === '❌'){
+                this._message.channel.send(new embeds.ErrorEmbed('Névszín nem lett megváltoztatva!'));
+            }
             this._end();
         });
 

@@ -39,7 +39,7 @@ module.exports.Server = class Server{
         this.speed = 1;
         this.transcoder = null;
         this._playedSong = false;
-        this._ranNoUserInVoiceChannel = false;
+        this._ranNoUserInVoiceChannelAmount = 0;
 
         this._connectionTimeout = setTimeout(() => {
             if(this.queue.length === 0){
@@ -56,6 +56,13 @@ module.exports.Server = class Server{
             if(oldState.member === message.guild.me){
                 if(oldState.channelID){
                     this.voiceChannel = newState.channel;
+                    if(this._noUserInVoiceChannelTimeout && this.getNonBotsOnTheVoiceChannel() > 0) 
+                        clearTimeout(this._noUserInVoiceChannelTimeout);
+                    else if(!this._noUserInVoiceChannelTimeout && this.getNonBotsOnTheVoiceChannel() == 0)
+                        this._noUserInVoiceChannelTimeout = setTimeout(() => {
+                            this.channel.send(new embeds.ErrorEmbed('Időtúllépés...'));
+                            this.disconnect();
+                        }, 300000);
                 }
                 if(newState.channelID === null){
                     this._destroy();
@@ -63,23 +70,24 @@ module.exports.Server = class Server{
             }
             if(!newState.member.user.bot){
                 if(this.voiceChannel){
-                    if(oldState.channelID === this.voiceChannel.id && !this._ranNoUserInVoiceChannel){
-                        this._ranNoUserInVoiceChannel = true;
-                        if(this.getNonBotsOnTheVoiceChannel() === 0 && this._playedSong){
-                            this._noUserInVoiceChannelTimeout = setTimeout(() => {
-                                this.channel.send(new embeds.ErrorEmbed('Időtúllépés...'));
-                                this.disconnect();
-                            }, 300000);
+                    if(oldState.channelID === this.voiceChannel.id){
+                        if(this._playedSong && this._ranNoUserInVoiceChannelAmount === 0){
+                            this._ranNoUserInVoiceChannelAmount++;
+                            if(this.getNonBotsOnTheVoiceChannel() === 0){
+                                this._noUserInVoiceChannelTimeout = setTimeout(() => {
+                                    this.channel.send(new embeds.ErrorEmbed('Időtúllépés...'));
+                                    this.disconnect();
+                                }, 300000);
+                            }
+                        }
+                    }
+                    else if(oldState.channelID !== this.voiceChannel.id){
+                        if(this._noUserInVoiceChannelTimeout){
+                            clearTimeout(this._noUserInVoiceChannelTimeout);
                         }
                     }
                 }
             }
-            if(newState.channelID && !newState.member.user.bot && newState.channelID === this.voiceChannel.id){
-                if(this._noUserInVoiceChannelTimeout){
-                    clearTimeout(this._noUserInVoiceChannelTimeout);
-                }
-            }
-
         })
     }
 
@@ -98,6 +106,7 @@ module.exports.Server = class Server{
     }
 
     async _playSong(){
+        if(this.queue[this.SHI].link === 'D:/Harukawa_bot/megakarokhalni2.mp3') return;
         if(this.channel.deleted){
             this.voiceConnection.disconnect();
             delete index.servers[this.id].instance;
@@ -331,10 +340,9 @@ module.exports.Server = class Server{
     }
     //_Livestream still bugged, cuz it skips after like 5 hrs or so, its random idk why have to fix it
     async _Livestream(){
-        this.looped = true;
         this.nightcore = false;
         this.daycore = false;
-        var stream = ytdl.downloadFromInfo(this.queue[this.SHI].information, { quality: [91, 92, 93, 94, 95], highWaterMark: 1 << 25, begin: Date.now() - 30000, liveBuffer: 1000 });
+        var stream = ytdl.downloadFromInfo(this.queue[this.SHI].information, { isHLS: true, dlChunkSize: 0, liveBuffer: 1000, highWaterMark:1<<25});
         return stream;
     }
 
@@ -444,5 +452,15 @@ module.exports.Server = class Server{
             i++;
         }
         return contains;
+    }
+
+    async playMegAkarokHalni(message){
+        if(this.queue.length > 0) this.clear();
+        if(this.voiceConnection.dispatcher) this.songFinish();
+        this.createSong(message, 'D:/Harukawa_bot/megakarokhalni2.mp3');
+        await this.voiceConnection.play('D:/Harukawa_bot/megakarokhalni2.mp3');
+        this.voiceConnection.dispatcher.on("finish",async()=>{
+            await this.songFinish();
+        });
     }
 }
