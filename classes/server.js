@@ -201,7 +201,7 @@ module.exports.Server = class Server{
         
         q = encodeURIComponent(q);
 
-        request(`${url}&q=${q}&type=video&key=${botconfig.YOUTUBE_API_KEY}&maxResults=${results}`,(error,response,data)=>{
+        request(`${url}&q=${q.replace('--instant', '')}&type=video&key=${botconfig.YOUTUBE_API_KEY}&maxResults=${results}`,(error,response,data)=>{
             try{
                 if(!response) throw new exceptions.UnexpectedAPIResponse("Unexpected API response!");
                 if(response.statusCode === 400) throw new exceptions.BadRequest("Bad Request!");
@@ -209,7 +209,7 @@ module.exports.Server = class Server{
                     var data = JSON.parse(response.body);
                     if(Object.keys(data.items).length === 0) throw new exceptions.NoVideoFound("No video found!");
                     var link = `https://www.youtube.com/watch?v=${data.items[0].id.videoId}`;
-    
+
                     this.createSong(message,link);
                 }
             }
