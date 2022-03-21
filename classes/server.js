@@ -171,8 +171,12 @@ module.exports.Server = class Server{
         var music = new song.Song(link,requestedBy,requestedByPFP,message);
 
         await music.getInfo();
-
-        this.queue.push(music);
+        if (message.content.includes('--instant') && this.queue.length >= 2){
+            this.queue.splice(1, 0, music);
+        }
+        else{
+            this.queue.push(music);
+        }
         if(this.queue.length === 1) this._playSong();
         else message.channel.send(new embeds.RequestedSongEmbed(music));
     }
