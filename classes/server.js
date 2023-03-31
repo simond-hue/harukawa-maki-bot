@@ -120,36 +120,40 @@ module.exports.Server = class Server{
             this.skip();
         }
         var stream = null;
-        await new Promise(async(resolve,reject)=>{
-            this.queue[this.SHI].isLive ? stream = await this._Livestream() : stream = await this._NormalVideo();
-            resolve(stream);
-        })
-        .then(async()=>{
-            if(this.nightcore) this._modifyStreamSampleRate(stream,36000);
-            else if(this.daycore) this._modifyStreamSampleRate(stream,60000);
-            else this._modifyStreamSampleRate(stream,48000);
+        try{
+            await new Promise(async(resolve,reject)=>{
+                this.queue[this.SHI].isLive ? stream = await this._Livestream() : stream = await this._NormalVideo();
+                resolve(stream);
+            })
+            .then(async()=>{
+                if(this.nightcore) this._modifyStreamSampleRate(stream,36000);
+                else if(this.daycore) this._modifyStreamSampleRate(stream,60000);
+                else this._modifyStreamSampleRate(stream,48000);
+    
+                await this.voiceConnection.play(stream);
+    
+                this.voiceConnection.dispatcher.setBitrate('auto');
+    
+                this.voiceConnection.dispatcher.on("start",async()=>{
+                    await this._songStart();
+                });
+                this.voiceConnection.dispatcher.on("finish",async()=>{
+                    await this.songFinish();
+                });
+                this.voiceConnection.dispatcher.on("error", (error)=>{
+                    if(error.message.includes('Video unavailable')){
+                        this.channel.send(new embeds.ErrorEmbed('A videó nem elérhető!'));
+                        this.skip();
+                    }
+                    else{
+                        console.log(error + "\n" + this.queue[this.SHI].link);
+                        this.skip();
+                    }
+                });
+            })
+        }
+        catch(e){}
 
-            await this.voiceConnection.play(stream);
-
-            this.voiceConnection.dispatcher.setBitrate('auto');
-
-            this.voiceConnection.dispatcher.on("start",async()=>{
-                await this._songStart();
-            });
-            this.voiceConnection.dispatcher.on("finish",async()=>{
-                await this.songFinish();
-            });
-            this.voiceConnection.dispatcher.on("error", (error)=>{
-                if(error.message.includes('Video unavailable')){
-                    this.channel.send(new embeds.ErrorEmbed('A videó nem elérhető!'));
-                    this.skip();
-                }
-                else{
-                    console.log(error + "\n" + this.queue[this.SHI].link);
-                    this.skip();
-                }
-            });
-        })
     }
 
     _writeTitle(title){
@@ -340,7 +344,10 @@ module.exports.Server = class Server{
         this.transcoder = new prism.FFmpeg({
             args: arg
         });
-        stream.pipe(this.transcoder);
+        try{
+            stream.pipe(this.transcoder);
+        }
+        catch(e){ }
     }
     //_Livestream still bugged, cuz it skips after like 5 hrs or so, its random idk why have to fix it
     async _Livestream(){
